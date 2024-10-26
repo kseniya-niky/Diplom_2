@@ -6,7 +6,6 @@ import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
-import static org.junit.Assert.*;
 
 public class OrderClient {
     private ClientServices services = new ClientServices();
@@ -82,17 +81,4 @@ public class OrderClient {
                 .extract()
                 .body().as(OrdersCustomer.class);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
