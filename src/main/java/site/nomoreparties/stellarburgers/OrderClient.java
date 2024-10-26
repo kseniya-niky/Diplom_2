@@ -2,25 +2,35 @@ package site.nomoreparties.stellarburgers;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.apache.commons.lang3.StringUtils;
+import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.*;
 
 public class OrderClient {
+    private ClientServices services = new ClientServices();
 
-    private String getResponseDataByKey(ValidatableResponse response, int statusCode, String key) {
-        return  response
-                .assertThat()
-                .statusCode(statusCode)
-                .extract()
-                .path(key).toString();
+    public String getResponseDataByKey(ValidatableResponse response, String key) {
+        return response.extract().path(key).toString();
     }
-    public ValidatableResponse createNewOrderWithoutAuth(OrderIngredients ingredients) {
-        return given()
-                .log().all()
+
+    public void checkResponseHTTPStatus(ValidatableResponse response, int statusCode) {
+        response.assertThat().statusCode(statusCode);
+    }
+
+    private RequestSpecification specificationWithoutAuth() {
+        return given().log().all().baseUri(Constants.BASE_URI);
+    }
+
+    private RequestSpecification specificationWithAuth(String token) {
+        return given().log().all()
                 .baseUri(Constants.BASE_URI)
+                .auth().oauth2(token);
+    }
+
+    public ValidatableResponse createNewOrderWithoutAuth(OrderIngredients ingredients) {
+        return specificationWithoutAuth()
                 .contentType(ContentType.JSON)
                 .body(ingredients)
                 .and()
@@ -30,11 +40,8 @@ public class OrderClient {
     }
 
     public ValidatableResponse createNewOrderWithAuth(OrderIngredients ingredients, String accessToken) {
-        var token = StringUtils.substringAfter(accessToken, " ");
-        return given()
-                .log().all()
-                .baseUri(Constants.BASE_URI)
-                .auth().oauth2(token)
+        var token = services.trimAccessToken(accessToken);
+        return specificationWithAuth(token)
                 .contentType(ContentType.JSON)
                 .body(ingredients)
                 .and()
@@ -52,9 +59,7 @@ public class OrderClient {
     }
 
     public ValidatableResponse getOrdersWithoutAuth() {
-        return given()
-                .log().all()
-                .baseUri(Constants.BASE_URI)
+        return specificationWithoutAuth()
                 .and()
                 .when()
                 .get(Constants.ORDERS_PATH)
@@ -62,11 +67,8 @@ public class OrderClient {
     }
 
     public ValidatableResponse getOrdersWithAuth(String accessToken) {
-        var token = StringUtils.substringAfter(accessToken, " ");
-        return given()
-                .log().all()
-                .baseUri(Constants.BASE_URI)
-                .auth().oauth2(token)
+        var token = services.trimAccessToken(accessToken);
+        return specificationWithAuth(token)
                 .and()
                 .when()
                 .get(Constants.ORDERS_PATH)
@@ -92,37 +94,5 @@ public class OrderClient {
 
 
 
-    public void checkCreatedOrderSuccess(OrderCreated orderCreated) {
-        assertTrue("Заказ не создан", orderCreated.isSuccess());
-        assertNotNull("Заказу не присвоен номер", orderCreated.getOrder().getNumber());
-    }
 
-    public void checkCreateOrderWithIncorrectData(ValidatableResponse response) {
-        getResponseDataByKey(response, HTTP_INTERNAL_ERROR, "");
-    }
-
-    public void checkCreateOrderWithNullData(ValidatableResponse response) {
-        boolean isSuccess = Boolean.valueOf(getResponseDataByKey(response, HTTP_BAD_REQUEST, "success"));
-        assertFalse(isSuccess);
-
-        String messageResponse = getResponseDataByKey(response, HTTP_BAD_REQUEST, "message");
-        assertEquals("Создан заказ без списка ингредиентов",
-                        "Ingredient ids must be provided", messageResponse);
-    }
-
-    public void checkOrdersWithoutAuth(ValidatableResponse response) {
-        boolean isSuccess = Boolean.valueOf(getResponseDataByKey(response, HTTP_UNAUTHORIZED, "success"));
-        assertFalse(isSuccess);
-
-        String messageResponse = getResponseDataByKey(response, HTTP_UNAUTHORIZED, "message");
-        assertEquals("Получен список заказов без авторизации",
-                "You should be authorised", messageResponse);
-    }
-
-
-    public void checkOrdersWithAuth(OrdersCustomer ordersCustomer) {
-        assertTrue(ordersCustomer.isSuccess());
-        assertNotEquals("У пользователя нет заказов", 0, ordersCustomer.getTotal());
-        assertNotNull("Список заказов пользователя пуст", ordersCustomer.getOrders());
-    }
 }

@@ -9,6 +9,7 @@ import org.junit.runners.Parameterized;
 public class OrdersParamTest {
     private String[] ingredients;
     private OrderClient orderClient = new OrderClient();
+    private OrderChecks orderChecks = new OrderChecks();
 
     public OrdersParamTest(String[] ingredients) {
         this.ingredients = ingredients;
@@ -33,6 +34,6 @@ public class OrdersParamTest {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(response);
-        orderClient.checkCreatedOrderSuccess(orderCreated);
+        orderChecks.checkCreatedOrderSuccess(orderCreated);
     }
 }

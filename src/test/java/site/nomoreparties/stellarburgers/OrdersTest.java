@@ -6,6 +6,7 @@ import org.junit.Test;
 public class OrdersTest {
     private OrderClient orderClient = new OrderClient();
     private UserClient userClient = new UserClient();
+    private OrderChecks orderChecks = new OrderChecks();
 
     @Test
     public void createSuccessNewOrderWithoutAuth() {
@@ -14,7 +15,7 @@ public class OrdersTest {
 
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(response);
-        orderClient.checkCreatedOrderSuccess(orderCreated);
+        orderChecks.checkCreatedOrderSuccess(orderCreated);
     }
 
     @Test
@@ -30,7 +31,7 @@ public class OrdersTest {
 
         ValidatableResponse orderResponse = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(orderResponse);
-        orderClient.checkCreatedOrderSuccess(orderCreated);
+        orderChecks.checkCreatedOrderSuccess(orderCreated);
     }
 
     @Test
@@ -39,7 +40,7 @@ public class OrdersTest {
                 new OrderIngredients(new String[] {"DDD7c5a71d1f82001bdaaa79", "HJU!c5a71d1f82001bdaaa6c"});
 
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
-        orderClient.checkCreateOrderWithIncorrectData(response);
+        orderChecks.checkCreateOrderWithIncorrectData(response);
     }
 
     @Test
@@ -54,7 +55,7 @@ public class OrdersTest {
                 new OrderIngredients(new String[] {"DDD7c5a71d1f82001bdaaa79", "HJU!c5a71d1f82001bdaaa6c"});
 
         ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);
-        orderClient.checkCreateOrderWithIncorrectData(responseOrder);
+        orderChecks.checkCreateOrderWithIncorrectData(responseOrder);
     }
 
     @Test
@@ -62,7 +63,7 @@ public class OrdersTest {
         OrderIngredients orderIngredients = new OrderIngredients(new String[] {});
 
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
-        orderClient.checkCreateOrderWithNullData(response);
+        orderChecks.checkCreateOrderWithNullData(response);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class OrdersTest {
         OrderIngredients orderIngredients = new OrderIngredients(new String[] {});
 
         ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);
-        orderClient.checkCreateOrderWithNullData(responseOrder);
+        orderChecks.checkCreateOrderWithNullData(responseOrder);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class OrdersTest {
         OrderIngredients orderIngredients = new OrderIngredients(null);
 
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
-        orderClient.checkCreateOrderWithNullData(response);
+        orderChecks.checkCreateOrderWithNullData(response);
     }
 
     @Test
@@ -98,13 +99,13 @@ public class OrdersTest {
         OrderIngredients orderIngredients = new OrderIngredients(null);
 
         ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);
-        orderClient.checkCreateOrderWithNullData(responseOrder);
+        orderChecks.checkCreateOrderWithNullData(responseOrder);
     }
 
     @Test
     public void getListOfOrdersWithoutAuth() {
         ValidatableResponse response = orderClient.getOrdersWithoutAuth();
-        orderClient.checkOrdersWithoutAuth(response);
+        orderChecks.checkOrdersWithoutAuth(response);
     }
 
     @Test
@@ -117,6 +118,6 @@ public class OrdersTest {
 
         ValidatableResponse responseOrder = orderClient.getOrdersWithAuth(accessToken);
         OrdersCustomer ordersCustomer = orderClient.getResponseAboutListOfOrders(responseOrder);
-        orderClient.checkOrdersWithAuth(ordersCustomer);
+        orderChecks.checkOrdersWithAuth(ordersCustomer);
     }
 }
