@@ -7,10 +7,9 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class UserLoginParamTest {
-    private String accessToken, refreshToken;
     private String email, password;
     private UserClient userClient = new UserClient();
-    private UserLogin userLogin;
+    private UserChecks userChecks = new UserChecks();
 
     public UserLoginParamTest(String email, String password) {
         this.email = email;
@@ -20,23 +19,19 @@ public class UserLoginParamTest {
     @Parameterized.Parameters
     public static final Object[][] getLoginInfo() {
         return new Object[][]{
-                {Constants.DEFAULT_EMAIL, "saldf2903&^$"},
-                {"llkgd@tst.doc", Constants.DEFAULT_PASSWORD},
-                {"", Constants.DEFAULT_PASSWORD},
-                // {null, Constants.DEFAULT_PASSWORD}, //добавить таймаут чтобы отваливался
-                {Constants.DEFAULT_EMAIL, ""},
-                {Constants.DEFAULT_EMAIL, null}
+                { Constants.DEFAULT_EMAIL, "saldf2903&^$" },
+                { "llkgd@tst.doc", Constants.DEFAULT_PASSWORD },
+                { "", Constants.DEFAULT_PASSWORD },
+                { null, Constants.DEFAULT_PASSWORD },
+                { Constants.DEFAULT_EMAIL, "" },
+                { Constants.DEFAULT_EMAIL, null }
         };
     }
 
-    @Test
+    @Test(timeout=10000)
     public void loginFakeUser() {
-        userLogin = new UserLogin(email, password);
+        UserLogin userLogin = new UserLogin(email, password);
         ValidatableResponse response = userClient.loginUser(userLogin);
-
-        //accessToken = userLoginInfo.getAccessToken();
-        //refreshToken = userLoginInfo.getRefreshToken();
-
-        userClient.checkLoginFakeUser(response);
+        userChecks.checkLoginFakeUser(response);
     }
 }

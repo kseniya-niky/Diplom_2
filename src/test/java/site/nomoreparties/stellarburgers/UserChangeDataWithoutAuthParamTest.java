@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized;
 public class UserChangeDataWithoutAuthParamTest {
     private String email, password, name;
     private static UserClient userClient = new UserClient();
+    private UserChecks userChecks = new UserChecks();
 
     public UserChangeDataWithoutAuthParamTest(String email, String password, String name) {
         this.email = email;
@@ -32,9 +33,9 @@ public class UserChangeDataWithoutAuthParamTest {
 
     @Test
     @DisplayName("")
-    public void changeUserDataWithAuth() {
+    public void changeUserDataWithoutAuth() {
         UserNewData newDataUser = new UserNewData(email, password, name);
         ValidatableResponse response = userClient.changeUserWithoutAuth(newDataUser);
-        userClient.checkModiedDataWithoutAuth(response);
+        userChecks.checkModiedDataWithoutAuth(response);
     }
 }

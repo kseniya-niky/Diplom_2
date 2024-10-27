@@ -7,11 +7,17 @@ import org.junit.Test;
 public class UserCreateTest {
     private String accessToken;
     private UserClient userClient = new UserClient();
+    private UserChecks userChecks = new UserChecks();
     private NewUser newUser;
 
     @After
     public void deleteUser() {
-        userClient.deleteUser(accessToken);
+        if(accessToken != null) {
+            if (!accessToken.isBlank()) {
+                ValidatableResponse response = userClient.deleteUser(accessToken);
+                userChecks.checkDeletedUser(response);
+            }
+        }
     }
 
     @Test
@@ -20,8 +26,7 @@ public class UserCreateTest {
         ValidatableResponse response = userClient.createNewUser(newUser);
         NewUserRegistrationInfo userRegistrationInfo = userClient.getResponseAboutNewUser(response);
         accessToken = userRegistrationInfo.getAccessToken();
-
-        userClient.checkCreatedUser(userRegistrationInfo);
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
     }
 
     @Test
@@ -32,6 +37,6 @@ public class UserCreateTest {
         accessToken = userRegistrationInfo.getAccessToken();
 
         ValidatableResponse responseDuplicate = userClient.createNewUser(newUser);
-        userClient.checkDuplicateUser(responseDuplicate);
+        userChecks.checkDuplicateUser(responseDuplicate);
     }
 }

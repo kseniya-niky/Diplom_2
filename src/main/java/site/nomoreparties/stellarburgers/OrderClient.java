@@ -19,7 +19,8 @@ public class OrderClient {
     }
 
     private RequestSpecification specificationWithoutAuth() {
-        return given().log().all().baseUri(Constants.BASE_URI);
+        return given().log().all()
+                .baseUri(Constants.BASE_URI);
     }
 
     private RequestSpecification specificationWithAuth(String token) {
@@ -39,7 +40,7 @@ public class OrderClient {
     }
 
     public ValidatableResponse createNewOrderWithAuth(OrderIngredients ingredients, String accessToken) {
-        var token = services.trimAccessToken(accessToken);
+        String token = services.trimAccessToken(accessToken);
         return specificationWithAuth(token)
                 .contentType(ContentType.JSON)
                 .body(ingredients)
@@ -66,7 +67,7 @@ public class OrderClient {
     }
 
     public ValidatableResponse getOrdersWithAuth(String accessToken) {
-        var token = services.trimAccessToken(accessToken);
+        String token = services.trimAccessToken(accessToken);
         return specificationWithAuth(token)
                 .and()
                 .when()

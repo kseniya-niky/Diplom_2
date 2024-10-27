@@ -6,31 +6,28 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class OrdersParamTest {
+public class OrdersCreateWithoutAuthParamTest {
     private String[] ingredients;
     private OrderClient orderClient = new OrderClient();
     private OrderChecks orderChecks = new OrderChecks();
 
-    public OrdersParamTest(String[] ingredients) {
+    public OrdersCreateWithoutAuthParamTest(String[] ingredients) {
         this.ingredients = ingredients;
     }
 
     @Parameterized.Parameters
     public static final Object[][] getListOfIngredients() {
         return new Object[][]{
-                { new String[] {"61c0c5a71d1f82001bdaaa79", "61c0c5a71d1f82001bdaaa6c"}},
-                { new String[] {"61c0c5a71d1f82001bdaaa73", "61c0c5a71d1f82001bdaaa70",
-                        "61c0c5a71d1f82001bdaaa79",
-                        "61c0c5a71d1f82001bdaaa78",
-                        "61c0c5a71d1f82001bdaaa6d"}},
-                { new String[] {"DDD7c5a71d1f82001bdaaa79", "HJU!c5a71d1f82001bdaaa6c"}},
-                { new String[] {}},
-                { null }
+                { Constants.BURGER_TWO_INGREDIENTS },
+                { Constants.BURGER_FIVE_INGREDIENTS },
+                { Constants.BURGER_WITH_DEFECT_INGREDIENTS },
+                { Constants.BURGER_WITHOUT_INGREDIENTS },
+                { Constants.BURGER_NULL }
         };
     }
 
     @Test
-    public void createNewOrder() {
+    public void createNewOrderWithoutAuthPositiveAndNegative() {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(response);

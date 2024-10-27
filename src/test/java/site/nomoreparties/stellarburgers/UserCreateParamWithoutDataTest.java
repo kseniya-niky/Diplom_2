@@ -10,6 +10,7 @@ import org.junit.Test;
 public class UserCreateParamWithoutDataTest {
     private String email, password, name;
     private UserClient userClient = new UserClient();
+    private UserChecks userChecks = new UserChecks();
     private NewUser newUser;
 
     public UserCreateParamWithoutDataTest(String email, String password, String name) {
@@ -35,6 +36,6 @@ public class UserCreateParamWithoutDataTest {
     public void createNewUserWithoutData() {
         newUser = new NewUser(email, password, name);
         ValidatableResponse response = userClient.createNewUser(newUser);
-        userClient.checkCreatedUserWithoutParameter(response);
+        userChecks.checkCreatedUserWithoutParameter(response);
     }
 }

@@ -11,6 +11,7 @@ public class UserChangeDataWithAuthParamTest {
     private String email, password, name;
     private static String accessTokenCurrentUser;
     private static UserClient userClient = new UserClient();
+    private static UserChecks userChecks = new UserChecks();
 
     public UserChangeDataWithAuthParamTest(String email, String password, String name) {
         this.email = email;
@@ -36,7 +37,7 @@ public class UserChangeDataWithAuthParamTest {
         NewUser newUser = new NewUser(Constants.NEW_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse response = userClient.createNewUser(newUser);
         NewUserRegistrationInfo userRegistrationInfo = userClient.getResponseAboutNewUser(response);
-        userClient.checkCreatedUser(userRegistrationInfo);
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
 
         accessTokenCurrentUser = userRegistrationInfo.getAccessToken();
     }
@@ -47,11 +48,15 @@ public class UserChangeDataWithAuthParamTest {
         UserNewData newDataUser = new UserNewData(email, password, name);
         ValidatableResponse response = userClient.changeUserWithAuth(newDataUser, accessTokenCurrentUser);
         UserModifiedData userModifiedData = userClient.getResponseAboutModifiedData(response);
-        userClient.checkModifiedDataWithAuth(userModifiedData, email, name);
+        userChecks.checkModifiedDataWithAuth(userModifiedData, email, name);
     }
 
     @AfterClass
     public static void deleteUser() {
-        userClient.deleteUser(accessTokenCurrentUser);
+        if(accessTokenCurrentUser != null) {
+            if (!accessTokenCurrentUser.isBlank()) {
+                userClient.deleteUser(accessTokenCurrentUser);
+            }
+        }
     }
 }
