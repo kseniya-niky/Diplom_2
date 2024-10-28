@@ -1,4 +1,4 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.orders;
 
 public class OrderCreated {
     private String name;

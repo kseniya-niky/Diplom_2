@@ -1,14 +1,12 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
-public class UserNewData {
+public class UserLogin {
     private String email;
     private String password;
-    private String name;
 
-    public UserNewData(String email, String password, String name) {
+    public UserLogin(String email, String password) {
         this.email = email;
         this.password = password;
-        this.name = name;
     }
 
     public String getEmail() {
@@ -19,19 +17,11 @@ public class UserNewData {
         return password;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

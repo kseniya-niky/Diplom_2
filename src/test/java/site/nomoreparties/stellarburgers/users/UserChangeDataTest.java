@@ -1,9 +1,11 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Test;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.*;
 
 public class UserChangeDataTest {
     private UserClient userClient = new UserClient();
@@ -11,7 +13,7 @@ public class UserChangeDataTest {
     private String accessTokenCurrentUser;
 
     @Test
-    @DisplayName("")
+    @DisplayName("Изменение Email у авторизованного пользователя на зарегистрированный Email")
     public void changeUserDataSameEmailWithAuth() {
         NewUser newUser = new NewUser(Constants.NEW_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse responseNewUser = userClient.createNewUser(newUser);
@@ -26,7 +28,7 @@ public class UserChangeDataTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Изменение Email у неавторизованного пользователя на зарегистрированный Email")
     public void changeUserDataSameEmailWithoutAuth() {
         UserNewData newDataUser = new UserNewData(Constants.DEFAULT_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse responseNewDataUser = userClient.changeUserWithoutAuth(newDataUser);

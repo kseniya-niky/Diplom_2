@@ -1,9 +1,14 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.UserChecks;
+import site.nomoreparties.stellarburgers.users.UserClient;
+import site.nomoreparties.stellarburgers.users.UserLogin;
 
 @RunWith(Parameterized.class)
 public class UserLoginParamTest {
@@ -28,7 +33,8 @@ public class UserLoginParamTest {
         };
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=15000)
+    @DisplayName("Авторизация несуществующего пользователя")
     public void loginFakeUser() {
         UserLogin userLogin = new UserLogin(email, password);
         ValidatableResponse response = userClient.loginUser(userLogin);

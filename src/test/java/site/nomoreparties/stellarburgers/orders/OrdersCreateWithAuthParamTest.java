@@ -1,11 +1,21 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.orders;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.orders.OrderChecks;
+import site.nomoreparties.stellarburgers.orders.OrderClient;
+import site.nomoreparties.stellarburgers.orders.OrderCreated;
+import site.nomoreparties.stellarburgers.orders.OrderIngredients;
+import site.nomoreparties.stellarburgers.users.UserChecks;
+import site.nomoreparties.stellarburgers.users.UserClient;
+import site.nomoreparties.stellarburgers.users.UserLogin;
+import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
 @RunWith(Parameterized.class)
 public class OrdersCreateWithAuthParamTest {
@@ -42,6 +52,7 @@ public class OrdersCreateWithAuthParamTest {
     }
 
     @Test
+    @DisplayName("Создание заказа авторизованным пользователем с разным набором ингредиентов")
     public void createNewOrderWithAuthPositiveAndNegative() {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
         ValidatableResponse response = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);

@@ -1,9 +1,15 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.orders;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.orders.OrderChecks;
+import site.nomoreparties.stellarburgers.orders.OrderClient;
+import site.nomoreparties.stellarburgers.orders.OrderCreated;
+import site.nomoreparties.stellarburgers.orders.OrderIngredients;
 
 @RunWith(Parameterized.class)
 public class OrdersCreateWithoutAuthParamTest {
@@ -27,6 +33,7 @@ public class OrdersCreateWithoutAuthParamTest {
     }
 
     @Test
+    @DisplayName("Создание заказа неавторизованным пользователем с разным набором ингредиентов")
     public void createNewOrderWithoutAuthPositiveAndNegative() {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
         ValidatableResponse response = orderClient.createNewOrderWithoutAuth(orderIngredients);

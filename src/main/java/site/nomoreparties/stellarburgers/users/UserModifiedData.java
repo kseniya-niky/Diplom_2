@@ -1,4 +1,6 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
+
+import site.nomoreparties.stellarburgers.users.User;
 
 public class UserModifiedData {
     private boolean success;

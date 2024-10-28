@@ -1,9 +1,13 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
+import io.qameta.allure.Param;
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import site.nomoreparties.stellarburgers.*;
 
+import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 
@@ -14,6 +18,7 @@ public class UserClient {
         return response.extract().path(key).toString();
     }
 
+    @Step("Проверка статуса ответа")
     public void checkResponseHTTPStatus(ValidatableResponse response, int statusCode) {
         response.assertThat().statusCode(statusCode);
     }
@@ -29,6 +34,7 @@ public class UserClient {
                 .auth().oauth2(token);
     }
 
+    @Step("Создание нового пользователя")
     public ValidatableResponse createNewUser(NewUser newUser) {
         return specificationWithoutAuth()
                 .contentType(ContentType.JSON)
@@ -39,6 +45,7 @@ public class UserClient {
                 .then().log().all();
     }
 
+    @Step("Получение информации о созданном новом пользователе")
     public NewUserRegistrationInfo getResponseAboutNewUser(ValidatableResponse response) {
         return  response
                 .assertThat()
@@ -47,7 +54,8 @@ public class UserClient {
                 .body().as(NewUserRegistrationInfo.class);
     }
 
-    public ValidatableResponse deleteUser(String accessToken) {
+    @Step("Удаление пользователя")
+    public ValidatableResponse deleteUser(@Param(mode=HIDDEN) String accessToken) {
         String token = services.trimAccessToken(accessToken);
         return  specificationWithAuth(token)
                 .when()
@@ -55,6 +63,7 @@ public class UserClient {
                 .then().log().all();
     }
 
+    @Step("Авторизация пользователя")
     public ValidatableResponse loginUser(UserLogin userLogin) {
         return specificationWithoutAuth()
                 .contentType(ContentType.JSON)
@@ -65,6 +74,7 @@ public class UserClient {
                 .then().log().all();
     }
 
+    @Step("Получение информации об авторизации пользователя")
     public UserLoginInfo getResponseAboutLogin(ValidatableResponse response) {
         return  response
                 .assertThat()
@@ -73,7 +83,9 @@ public class UserClient {
                 .body().as(UserLoginInfo.class);
     }
 
-    public ValidatableResponse logoutUser(String accessToken, String refreshToken) {
+    @Step("Выход пользователя из системы")
+    public ValidatableResponse logoutUser(@Param(mode=HIDDEN) String accessToken,
+                                          @Param(mode=HIDDEN) String refreshToken) {
         String authToken = services.trimAccessToken(accessToken);
         UserLogout userLogout = new UserLogout(refreshToken);
 
@@ -94,15 +106,19 @@ public class UserClient {
                 .then().log().all();
     }
 
-    public ValidatableResponse changeUserWithAuth(UserNewData newData, String accessToken) {
+    @Step("Обновление данных авторизованного пользователя")
+    public ValidatableResponse changeUserWithAuth(UserNewData newData,
+                                                  @Param(mode=HIDDEN) String accessToken) {
         String token = services.trimAccessToken(accessToken);
         return updateUser(specificationWithAuth(token), newData);
     }
 
+    @Step("Обновление данных неавторизованного пользователя")
     public ValidatableResponse changeUserWithoutAuth(UserNewData newData) {
         return updateUser(specificationWithoutAuth(), newData);
     }
 
+    @Step("Получение информации об изменении данных пользователя")
     public UserModifiedData getResponseAboutModifiedData(ValidatableResponse response) {
         return  response
                 .assertThat()

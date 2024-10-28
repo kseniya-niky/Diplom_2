@@ -1,10 +1,10 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
-public class NewUserRegistrationInfo {
+public class UserLoginInfo {
     private boolean success;
-    private User user;
     private String accessToken;
     private String refreshToken;
+    private User user;
 
     public boolean isSuccess() {
         return success;

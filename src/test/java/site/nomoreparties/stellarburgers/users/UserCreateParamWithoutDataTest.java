@@ -1,10 +1,14 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.NewUser;
+import site.nomoreparties.stellarburgers.users.UserChecks;
+import site.nomoreparties.stellarburgers.users.UserClient;
 
 @RunWith(Parameterized.class)
 public class UserCreateParamWithoutDataTest {
@@ -32,7 +36,7 @@ public class UserCreateParamWithoutDataTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Создание пользователя без данных")
     public void createNewUserWithoutData() {
         newUser = new NewUser(email, password, name);
         ValidatableResponse response = userClient.createNewUser(newUser);

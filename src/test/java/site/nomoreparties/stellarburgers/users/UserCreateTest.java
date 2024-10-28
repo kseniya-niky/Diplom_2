@@ -1,8 +1,13 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Test;
+import site.nomoreparties.stellarburgers.users.NewUser;
+import site.nomoreparties.stellarburgers.users.NewUserRegistrationInfo;
+import site.nomoreparties.stellarburgers.users.UserChecks;
+import site.nomoreparties.stellarburgers.users.UserClient;
 
 public class UserCreateTest {
     private String accessToken;
@@ -21,6 +26,7 @@ public class UserCreateTest {
     }
 
     @Test
+    @DisplayName("Создание нового пользователя")
     public void createNewUser() {
         newUser = NewUser.random();
         ValidatableResponse response = userClient.createNewUser(newUser);
@@ -30,6 +36,7 @@ public class UserCreateTest {
     }
 
     @Test
+    @DisplayName("Создание идентичного пользователя")
     public void createDuplicateUser() {
         newUser = NewUser.random();
         ValidatableResponse response = userClient.createNewUser(newUser);

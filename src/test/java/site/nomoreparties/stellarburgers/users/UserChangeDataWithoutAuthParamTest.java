@@ -1,10 +1,14 @@
-package site.nomoreparties.stellarburgers;
+package site.nomoreparties.stellarburgers.users;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.UserChecks;
+import site.nomoreparties.stellarburgers.users.UserClient;
+import site.nomoreparties.stellarburgers.users.UserNewData;
 
 @RunWith(Parameterized.class)
 public class UserChangeDataWithoutAuthParamTest {
@@ -32,10 +36,10 @@ public class UserChangeDataWithoutAuthParamTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Изменение данных неавторизованного пользователя")
     public void changeUserDataWithoutAuth() {
         UserNewData newDataUser = new UserNewData(email, password, name);
         ValidatableResponse response = userClient.changeUserWithoutAuth(newDataUser);
-        userChecks.checkModiedDataWithoutAuth(response);
+        userChecks.checkModifiedDataWithoutAuth(response);
     }
 }
