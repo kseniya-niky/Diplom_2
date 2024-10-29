@@ -6,9 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
-import site.nomoreparties.stellarburgers.users.UserNewData;
 
 @RunWith(Parameterized.class)
 public class UserChangeDataWithoutAuthParamTest {

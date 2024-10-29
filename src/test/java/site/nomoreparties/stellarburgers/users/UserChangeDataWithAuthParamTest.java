@@ -6,12 +6,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import io.restassured.response.ValidatableResponse;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.*;
 
 @RunWith(Parameterized.class)
 public class UserChangeDataWithAuthParamTest {
     private String email, password, name;
-    private static String accessTokenCurrentUser;
+    private static NewUserRegistrationInfo userRegistrationInfo;
     private static UserClient userClient = new UserClient();
     private static UserChecks userChecks = new UserChecks();
 
@@ -38,26 +37,24 @@ public class UserChangeDataWithAuthParamTest {
     public static void createUserForChanges() {
         NewUser newUser = new NewUser(Constants.NEW_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse response = userClient.createNewUser(newUser);
-        NewUserRegistrationInfo userRegistrationInfo = userClient.getResponseAboutNewUser(response);
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
         userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
-
-        accessTokenCurrentUser = userRegistrationInfo.getAccessToken();
     }
 
     @Test
     @DisplayName("Изменение данных авторизованного пользователя")
     public void changeUserDataWithAuth() {
         UserNewData newDataUser = new UserNewData(email, password, name);
-        ValidatableResponse response = userClient.changeUserWithAuth(newDataUser, accessTokenCurrentUser);
+        ValidatableResponse response = userClient.changeUserWithAuth(newDataUser, userRegistrationInfo);
         UserModifiedData userModifiedData = userClient.getResponseAboutModifiedData(response);
         userChecks.checkModifiedDataWithAuth(userModifiedData, email, name);
     }
 
     @AfterClass
     public static void deleteUser() {
-        if(accessTokenCurrentUser != null) {
-            if (!accessTokenCurrentUser.isBlank()) {
-                userClient.deleteUser(accessTokenCurrentUser);
+        if(userRegistrationInfo.getAccessToken() != null) {
+            if (!userRegistrationInfo.getAccessToken().isBlank()) {
+                userClient.deleteUser(userRegistrationInfo);
             }
         }
     }

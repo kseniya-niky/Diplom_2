@@ -4,22 +4,18 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Test;
-import site.nomoreparties.stellarburgers.users.NewUser;
-import site.nomoreparties.stellarburgers.users.NewUserRegistrationInfo;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
 
 public class UserCreateTest {
-    private String accessToken;
+    private NewUserRegistrationInfo userRegistrationInfo;
     private UserClient userClient = new UserClient();
     private UserChecks userChecks = new UserChecks();
     private NewUser newUser;
 
     @After
     public void deleteUser() {
-        if(accessToken != null) {
-            if (!accessToken.isBlank()) {
-                ValidatableResponse response = userClient.deleteUser(accessToken);
+        if(userRegistrationInfo.getAccessToken() != null) {
+            if (!userRegistrationInfo.getAccessToken().isBlank()) {
+                ValidatableResponse response = userClient.deleteUser(userRegistrationInfo);
                 userChecks.checkDeletedUser(response);
             }
         }
@@ -30,8 +26,7 @@ public class UserCreateTest {
     public void createNewUser() {
         newUser = NewUser.random();
         ValidatableResponse response = userClient.createNewUser(newUser);
-        NewUserRegistrationInfo userRegistrationInfo = userClient.getResponseAboutNewUser(response);
-        accessToken = userRegistrationInfo.getAccessToken();
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
         userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
     }
 
@@ -40,8 +35,7 @@ public class UserCreateTest {
     public void createDuplicateUser() {
         newUser = NewUser.random();
         ValidatableResponse response = userClient.createNewUser(newUser);
-        NewUserRegistrationInfo userRegistrationInfo = userClient.getResponseAboutNewUser(response);
-        accessToken = userRegistrationInfo.getAccessToken();
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
 
         ValidatableResponse responseDuplicate = userClient.createNewUser(newUser);
         userChecks.checkDuplicateUser(responseDuplicate);

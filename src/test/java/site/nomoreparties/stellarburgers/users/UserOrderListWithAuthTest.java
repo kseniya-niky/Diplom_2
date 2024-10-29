@@ -9,10 +9,6 @@ import site.nomoreparties.stellarburgers.Constants;
 import site.nomoreparties.stellarburgers.orders.OrderChecks;
 import site.nomoreparties.stellarburgers.orders.OrderClient;
 import site.nomoreparties.stellarburgers.orders.OrdersCustomer;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
-import site.nomoreparties.stellarburgers.users.UserLogin;
-import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
 public class UserOrderListWithAuthTest {
     private OrderClient orderClient = new OrderClient();
@@ -20,23 +16,21 @@ public class UserOrderListWithAuthTest {
     private OrderChecks orderChecks = new OrderChecks();
     private UserChecks userChecks = new UserChecks();
 
-    private String accessToken, refreshToken;
+    private UserLoginInfo userLoginInfo;
 
     @Before
     public void loginUser() {
         UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
         ValidatableResponse response = userClient.loginUser(userLogin);
-        UserLoginInfo userLoginInfo = userClient.getResponseAboutLogin(response);
+        userLoginInfo = userClient.getResponseAboutLogin(response);
         userChecks.checkLoginDefaultUser(userLoginInfo);
-        accessToken = userLoginInfo.getAccessToken();
-        refreshToken = userLoginInfo.getRefreshToken();
     }
 
     @After
     public void logoutUser() {
-        if(refreshToken != null) {
-            if (!refreshToken.isBlank()) {
-                ValidatableResponse response = userClient.logoutUser(accessToken, refreshToken);
+        if(userLoginInfo.getRefreshToken() != null) {
+            if (!userLoginInfo.getRefreshToken().isBlank()) {
+                ValidatableResponse response = userClient.logoutUser(userLoginInfo);
                 userChecks.checkLogoutUser(response);
             }
         }
@@ -45,7 +39,7 @@ public class UserOrderListWithAuthTest {
     @Test
     @DisplayName("Получение списка заказов с авторизацией пользователя")
     public void getListOfOrdersWithAuth() {
-        ValidatableResponse responseOrder = orderClient.getOrdersWithAuth(accessToken);
+        ValidatableResponse responseOrder = orderClient.getOrdersWithAuth(userLoginInfo);
         OrdersCustomer ordersCustomer = orderClient.getResponseAboutListOfOrders(responseOrder);
         orderChecks.checkOrdersWithAuth(ordersCustomer);
     }

@@ -1,14 +1,13 @@
 package site.nomoreparties.stellarburgers.orders;
 
-import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import site.nomoreparties.stellarburgers.ClientServices;
 import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
-import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 
@@ -48,8 +47,8 @@ public class OrderClient {
 
     @Step("Создание нового заказа с авторизацией пользователя")
     public ValidatableResponse createNewOrderWithAuth(OrderIngredients ingredients,
-                                                      @Param(mode=HIDDEN) String accessToken) {
-        String token = services.trimAccessToken(accessToken);
+                                                      UserLoginInfo info) {
+        String token = services.trimAccessToken(info.getAccessToken());
         return specificationWithAuth(token)
                 .contentType(ContentType.JSON)
                 .body(ingredients)
@@ -78,8 +77,8 @@ public class OrderClient {
     }
 
     @Step("Получение списка заказов для авторизованного пользователя")
-    public ValidatableResponse getOrdersWithAuth(@Param(mode=HIDDEN) String accessToken) {
-        String token = services.trimAccessToken(accessToken);
+    public ValidatableResponse getOrdersWithAuth(UserLoginInfo info) {
+        String token = services.trimAccessToken(info.getAccessToken());
         return specificationWithAuth(token)
                 .and()
                 .when()

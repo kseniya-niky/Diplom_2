@@ -5,21 +5,17 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
-import site.nomoreparties.stellarburgers.users.UserLogin;
-import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
 public class UserLoginTest {
-    private String accessToken, refreshToken;
     private UserClient userClient = new UserClient();
     private UserChecks userChecks = new UserChecks();
+    private UserLoginInfo userLoginInfo;
 
     @After
     public void logoutUser() {
-        if(refreshToken != null) {
-            if (!refreshToken.isBlank()) {
-                ValidatableResponse response = userClient.logoutUser(accessToken, refreshToken);
+        if(userLoginInfo.getRefreshToken() != null) {
+            if (!userLoginInfo.getRefreshToken().isBlank()) {
+                ValidatableResponse response = userClient.logoutUser(userLoginInfo);
                 userChecks.checkLogoutUser(response);
             }
         }
@@ -30,11 +26,7 @@ public class UserLoginTest {
     public void loginDefaultUser() {
         UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
         ValidatableResponse response = userClient.loginUser(userLogin);
-        UserLoginInfo userLoginInfo = userClient.getResponseAboutLogin(response);
-
+        userLoginInfo = userClient.getResponseAboutLogin(response);
         userChecks.checkLoginDefaultUser(userLoginInfo);
-
-        accessToken = userLoginInfo.getAccessToken();
-        refreshToken = userLoginInfo.getRefreshToken();
     }
 }

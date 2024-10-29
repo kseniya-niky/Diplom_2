@@ -8,10 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.orders.OrderChecks;
-import site.nomoreparties.stellarburgers.orders.OrderClient;
-import site.nomoreparties.stellarburgers.orders.OrderCreated;
-import site.nomoreparties.stellarburgers.orders.OrderIngredients;
 import site.nomoreparties.stellarburgers.users.UserChecks;
 import site.nomoreparties.stellarburgers.users.UserClient;
 import site.nomoreparties.stellarburgers.users.UserLogin;
@@ -24,7 +20,7 @@ public class OrdersCreateWithAuthParamTest {
     private OrderChecks orderChecks = new OrderChecks();
     private static UserClient userClient = new UserClient();
     private static UserChecks userChecks = new UserChecks();
-    private static String accessToken, refreshToken;
+    private static UserLoginInfo userLoginInfo;
 
     public OrdersCreateWithAuthParamTest(String[] ingredients) {
         this.ingredients = ingredients;
@@ -45,25 +41,23 @@ public class OrdersCreateWithAuthParamTest {
     public static void loginUser() {
         UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
         ValidatableResponse response = userClient.loginUser(userLogin);
-        UserLoginInfo userLoginInfo = userClient.getResponseAboutLogin(response);
+        userLoginInfo = userClient.getResponseAboutLogin(response);
         userChecks.checkLoginDefaultUser(userLoginInfo);
-        accessToken = userLoginInfo.getAccessToken();
-        refreshToken = userLoginInfo.getRefreshToken();
     }
 
     @Test
     @DisplayName("Создание заказа авторизованным пользователем с разным набором ингредиентов")
     public void createNewOrderWithAuthPositiveAndNegative() {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
-        ValidatableResponse response = orderClient.createNewOrderWithAuth(orderIngredients, accessToken);
+        ValidatableResponse response = orderClient.createNewOrderWithAuth(orderIngredients, userLoginInfo);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(response);
         orderChecks.checkCreatedOrderSuccess(orderCreated);
     }
 
     @AfterClass
     public static void logoutUser() {
-        if(!refreshToken.isBlank()) {
-            ValidatableResponse response = userClient.logoutUser(accessToken, refreshToken);
+        if(!userLoginInfo.getRefreshToken().isBlank()) {
+            ValidatableResponse response = userClient.logoutUser(userLoginInfo);
             userChecks.checkLogoutUser(response);
         }
     }

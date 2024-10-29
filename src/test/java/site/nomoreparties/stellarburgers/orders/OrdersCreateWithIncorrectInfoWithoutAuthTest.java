@@ -4,9 +4,6 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.orders.OrderChecks;
-import site.nomoreparties.stellarburgers.orders.OrderClient;
-import site.nomoreparties.stellarburgers.orders.OrderIngredients;
 
 public class OrdersCreateWithIncorrectInfoWithoutAuthTest {
     private OrderClient orderClient = new OrderClient();

@@ -6,9 +6,6 @@ import org.junit.runners.Parameterized;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.NewUser;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
 
 @RunWith(Parameterized.class)
 public class UserCreateParamWithoutDataTest {

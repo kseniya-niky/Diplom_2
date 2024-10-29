@@ -1,13 +1,11 @@
 package site.nomoreparties.stellarburgers.users;
 
-import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import site.nomoreparties.stellarburgers.*;
 
-import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
 
@@ -55,8 +53,8 @@ public class UserClient {
     }
 
     @Step("Удаление пользователя")
-    public ValidatableResponse deleteUser(@Param(mode=HIDDEN) String accessToken) {
-        String token = services.trimAccessToken(accessToken);
+    public ValidatableResponse deleteUser(NewUserRegistrationInfo info) {
+        String token = services.trimAccessToken(info.getAccessToken());
         return  specificationWithAuth(token)
                 .when()
                 .delete(Constants.DELETE_UPDATE_PATH)
@@ -84,10 +82,9 @@ public class UserClient {
     }
 
     @Step("Выход пользователя из системы")
-    public ValidatableResponse logoutUser(@Param(mode=HIDDEN) String accessToken,
-                                          @Param(mode=HIDDEN) String refreshToken) {
-        String authToken = services.trimAccessToken(accessToken);
-        UserLogout userLogout = new UserLogout(refreshToken);
+    public ValidatableResponse logoutUser(UserLoginInfo info) {
+        String authToken = services.trimAccessToken(info.getAccessToken());
+        UserLogout userLogout = new UserLogout(info.getRefreshToken());
 
          return specificationWithAuth(authToken)
                 .contentType(ContentType.JSON)
@@ -108,8 +105,8 @@ public class UserClient {
 
     @Step("Обновление данных авторизованного пользователя")
     public ValidatableResponse changeUserWithAuth(UserNewData newData,
-                                                  @Param(mode=HIDDEN) String accessToken) {
-        String token = services.trimAccessToken(accessToken);
+                                                  NewUserRegistrationInfo info) {
+        String token = services.trimAccessToken(info.getAccessToken());
         return updateUser(specificationWithAuth(token), newData);
     }
 

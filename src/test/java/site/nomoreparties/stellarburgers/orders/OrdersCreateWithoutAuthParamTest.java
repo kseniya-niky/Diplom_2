@@ -6,10 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.orders.OrderChecks;
-import site.nomoreparties.stellarburgers.orders.OrderClient;
-import site.nomoreparties.stellarburgers.orders.OrderCreated;
-import site.nomoreparties.stellarburgers.orders.OrderIngredients;
 
 @RunWith(Parameterized.class)
 public class OrdersCreateWithoutAuthParamTest {
