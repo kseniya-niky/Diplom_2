@@ -38,16 +38,16 @@ public class UserChangeDataWithAuthParamTest {
         NewUser newUser = new NewUser(Constants.NEW_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse response = userClient.createNewUser(newUser);
         userRegistrationInfo = userClient.getResponseAboutNewUser(response);
-        userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
     }
 
     @Test
     @DisplayName("Изменение данных авторизованного пользователя")
     public void changeUserDataWithAuth() {
-        UserNewData newDataUser = new UserNewData(email, password, name);
-        ValidatableResponse response = userClient.changeUserWithAuth(newDataUser, userRegistrationInfo);
+        UserNewData userNewData = new UserNewData(email, password, name);
+        ValidatableResponse response = userClient.changeUserWithAuth(userNewData, userRegistrationInfo);
         UserModifiedData userModifiedData = userClient.getResponseAboutModifiedData(response);
-        userChecks.checkModifiedDataWithAuth(userModifiedData, email, name);
+        userChecks.checkModifiedDataWithAuth(userModifiedData, userNewData);
     }
 
     @AfterClass

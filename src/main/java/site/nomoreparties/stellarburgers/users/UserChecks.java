@@ -1,12 +1,10 @@
 package site.nomoreparties.stellarburgers.users;
 
-import io.qameta.allure.Param;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import org.junit.Assert;
 import site.nomoreparties.stellarburgers.Constants;
 
-import static io.qameta.allure.model.Parameter.Mode.HIDDEN;
 import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -16,11 +14,11 @@ public class UserChecks {
 
     @Step("Проверка, что пользователь успешно создан")
     public void checkCreatedUser(NewUserRegistrationInfo userInfo,
-                                 @Param(mode=HIDDEN) String currentEmail,
-                                 @Param(mode=HIDDEN) String currentName) {
+                                 NewUser newUser) {
         assertTrue(userInfo.isSuccess());
-        assertEquals("Пользователь создан под другим email", currentEmail.toLowerCase(), userInfo.getUser().getEmail());
-        assertEquals("Пользователь создан под другим name", currentName, userInfo.getUser().getName());
+        assertEquals("Пользователь создан под другим email",
+                newUser.getEmail().toLowerCase(), userInfo.getUser().getEmail());
+        assertEquals("Пользователь создан под другим name", newUser.getName(), userInfo.getUser().getName());
     }
 
     @Step("Проверка, что пользователь успешно удален")
@@ -83,13 +81,12 @@ public class UserChecks {
 
     @Step("Проверка изменения данных для авторизованного пользователя")
     public void checkModifiedDataWithAuth(UserModifiedData modifiedData,
-                                          @Param(mode=HIDDEN) String currentEmail,
-                                          @Param(mode=HIDDEN) String currentName) {
+                                          UserNewData userNewData) {
         assertTrue(modifiedData.isSuccess());
         assertEquals("Данные изменены под другим email",
-                currentEmail, modifiedData.getUser().getEmail());
+                userNewData.getEmail(), modifiedData.getUser().getEmail());
         assertEquals("Данные изменены под другим name",
-                currentName, modifiedData.getUser().getName());
+                userNewData.getName(), modifiedData.getUser().getName());
     }
 
     @Step("Проверка изменения данных для неавторизованного пользователя")

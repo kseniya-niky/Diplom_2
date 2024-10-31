@@ -27,7 +27,7 @@ public class UserCreateTest {
         newUser = NewUser.random();
         ValidatableResponse response = userClient.createNewUser(newUser);
         userRegistrationInfo = userClient.getResponseAboutNewUser(response);
-        userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
     }
 
     @Test

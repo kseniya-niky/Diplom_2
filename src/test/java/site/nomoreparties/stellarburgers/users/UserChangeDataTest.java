@@ -17,7 +17,7 @@ public class UserChangeDataTest {
         NewUser newUser = new NewUser(Constants.NEW_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse responseNewUser = userClient.createNewUser(newUser);
         userRegistrationInfo = userClient.getResponseAboutNewUser(responseNewUser);
-        userChecks.checkCreatedUser(userRegistrationInfo, newUser.getEmail(), newUser.getName());
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
 
         UserNewData newDataUser = new UserNewData(Constants.DEFAULT_EMAIL, Constants.NEW_PASSWORD, Constants.NEW_NAME);
         ValidatableResponse responseNewDataUser = userClient.changeUserWithAuth(newDataUser, userRegistrationInfo);
