@@ -6,6 +6,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import site.nomoreparties.stellarburgers.ClientServices;
 import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.ingredients.ListOfIngredients;
 import site.nomoreparties.stellarburgers.users.NewUserRegistrationInfo;
 import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
@@ -94,5 +95,23 @@ public class OrderClient {
                 .statusCode(HTTP_OK)
                 .extract()
                 .body().as(OrdersCustomer.class);
+    }
+
+    @Step("Получение списка ингредиентов")
+    public ValidatableResponse getListOfIngredients() {
+        return specificationWithoutAuth()
+                .and()
+                .when()
+                .get(Constants.INGREDIENTS_PATH)
+                .then().log().all();
+    }
+
+    @Step("Получение успешного ответа о списке ингредиентов")
+    public ListOfIngredients getResponseAboutListOfIngredients(ValidatableResponse response) {
+        return  response
+                .assertThat()
+                .statusCode(HTTP_OK)
+                .extract()
+                .body().as(ListOfIngredients.class);
     }
 }

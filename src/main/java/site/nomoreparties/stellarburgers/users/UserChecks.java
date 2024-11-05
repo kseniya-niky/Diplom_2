@@ -84,7 +84,7 @@ public class UserChecks {
                                           UserNewData userNewData) {
         assertTrue(modifiedData.isSuccess());
         assertEquals("Данные изменены под другим email",
-                userNewData.getEmail(), modifiedData.getUser().getEmail());
+                userNewData.getEmail().toLowerCase(), modifiedData.getUser().getEmail());
         assertEquals("Данные изменены под другим name",
                 userNewData.getName(), modifiedData.getUser().getName());
     }
