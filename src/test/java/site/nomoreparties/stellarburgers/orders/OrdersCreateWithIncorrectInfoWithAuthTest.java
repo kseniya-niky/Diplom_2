@@ -6,10 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
-import site.nomoreparties.stellarburgers.users.UserLogin;
-import site.nomoreparties.stellarburgers.users.UserLoginInfo;
+import site.nomoreparties.stellarburgers.users.*;
 
 public class OrdersCreateWithIncorrectInfoWithAuthTest {
     private OrderClient orderClient = new OrderClient();
@@ -17,22 +14,21 @@ public class OrdersCreateWithIncorrectInfoWithAuthTest {
     private OrderChecks orderChecks = new OrderChecks();
     private UserChecks userChecks = new UserChecks();
 
-    private UserLoginInfo userLoginInfo;
+    private NewUserRegistrationInfo userRegistrationInfo = new NewUserRegistrationInfo();
 
     @Before
-    public void loginUser() {
-        UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
-        ValidatableResponse response = userClient.loginUser(userLogin);
-        userLoginInfo = userClient.getResponseAboutLogin(response);
-        userChecks.checkLoginDefaultUser(userLoginInfo);
+    public void createUser() {
+        NewUser newUser = NewUser.random();
+        ValidatableResponse response = userClient.createNewUser(newUser);
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
     }
 
     @After
-    public void logoutUser() {
-        if(userLoginInfo.getRefreshToken() != null) {
-            if (!userLoginInfo.getRefreshToken().isBlank()) {
-                ValidatableResponse response = userClient.logoutUser(userLoginInfo);
-                userChecks.checkLogoutUser(response);
+    public void deleteUser() {
+        if(userRegistrationInfo.getAccessToken() != null) {
+            if (!userRegistrationInfo.getAccessToken().isBlank()) {
+                userClient.deleteUser(userRegistrationInfo);
             }
         }
     }
@@ -41,7 +37,7 @@ public class OrdersCreateWithIncorrectInfoWithAuthTest {
     @DisplayName("Создание заказа с неправильным хэшем ингредиентов авторизованным пользователем")
     public void createNewOrderWithIncorrectDataWithAuth() {
         OrderIngredients orderIngredients = new OrderIngredients(Constants.BURGER_WITH_DEFECT_INGREDIENTS);
-        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userLoginInfo);
+        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userRegistrationInfo);
         orderChecks.checkCreateOrderWithIncorrectData(responseOrder);
     }
 
@@ -49,7 +45,7 @@ public class OrdersCreateWithIncorrectInfoWithAuthTest {
     @DisplayName("Создание заказа с пустым списком ингредиентов авторизованным пользователем")
     public void createNewOrderWithEmptyDataWithAuth() {
         OrderIngredients orderIngredients = new OrderIngredients(Constants.BURGER_WITHOUT_INGREDIENTS);
-        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userLoginInfo);
+        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userRegistrationInfo);
         orderChecks.checkCreateOrderWithNullData(responseOrder);
     }
 
@@ -57,7 +53,7 @@ public class OrdersCreateWithIncorrectInfoWithAuthTest {
     @DisplayName("Создание заказа без ингредиентов авторизованным пользователем")
     public void createNewOrderWithNullDataWithAuth() {
         OrderIngredients orderIngredients = new OrderIngredients(Constants.BURGER_NULL);
-        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userLoginInfo);
+        ValidatableResponse responseOrder = orderClient.createNewOrderWithAuth(orderIngredients, userRegistrationInfo);
         orderChecks.checkCreateOrderWithNullData(responseOrder);
     }
 }

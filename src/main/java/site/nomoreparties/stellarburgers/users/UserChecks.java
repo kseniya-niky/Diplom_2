@@ -50,12 +50,12 @@ public class UserChecks {
     }
 
     @Step("Проверка входа в систему для существующего пользователя")
-    public void checkLoginDefaultUser(UserLoginInfo loginInfo) {
+    public void checkLoginDefaultUser(UserLoginInfo loginInfo, NewUser currentUser) {
         assertTrue(loginInfo.isSuccess());
         Assert.assertEquals("Пользователь авторизован под другим email",
-                Constants.DEFAULT_EMAIL, loginInfo.getUser().getEmail());
+                currentUser.getEmail().toLowerCase(), loginInfo.getUser().getEmail());
         assertEquals("Пользователь авторизован под другим name",
-                Constants.DEFAULT_NAME, loginInfo.getUser().getName());
+                currentUser.getName(), loginInfo.getUser().getName());
     }
 
     @Step("Проверка входа в систему для несуществующего пользователя")

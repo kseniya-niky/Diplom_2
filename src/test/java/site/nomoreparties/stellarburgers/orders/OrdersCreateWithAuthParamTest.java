@@ -8,10 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import site.nomoreparties.stellarburgers.Constants;
-import site.nomoreparties.stellarburgers.users.UserChecks;
-import site.nomoreparties.stellarburgers.users.UserClient;
-import site.nomoreparties.stellarburgers.users.UserLogin;
-import site.nomoreparties.stellarburgers.users.UserLoginInfo;
+import site.nomoreparties.stellarburgers.users.*;
 
 @RunWith(Parameterized.class)
 public class OrdersCreateWithAuthParamTest {
@@ -20,7 +17,7 @@ public class OrdersCreateWithAuthParamTest {
     private OrderChecks orderChecks = new OrderChecks();
     private static UserClient userClient = new UserClient();
     private static UserChecks userChecks = new UserChecks();
-    private static UserLoginInfo userLoginInfo;
+    private static NewUserRegistrationInfo userRegistrationInfo = new NewUserRegistrationInfo();
 
     public OrdersCreateWithAuthParamTest(String[] ingredients) {
         this.ingredients = ingredients;
@@ -38,27 +35,27 @@ public class OrdersCreateWithAuthParamTest {
     }
 
     @BeforeClass
-    public static void loginUser() {
-        UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
-        ValidatableResponse response = userClient.loginUser(userLogin);
-        userLoginInfo = userClient.getResponseAboutLogin(response);
-        userChecks.checkLoginDefaultUser(userLoginInfo);
+    public static void createUser() {
+        NewUser newUser = NewUser.random();
+        ValidatableResponse response = userClient.createNewUser(newUser);
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
     }
 
     @Test
     @DisplayName("Создание заказа авторизованным пользователем с разным набором ингредиентов")
     public void createNewOrderWithAuthPositiveAndNegative() {
         OrderIngredients orderIngredients = new OrderIngredients(ingredients);
-        ValidatableResponse response = orderClient.createNewOrderWithAuth(orderIngredients, userLoginInfo);
+        ValidatableResponse response = orderClient.createNewOrderWithAuth(orderIngredients, userRegistrationInfo);
         OrderCreated orderCreated = orderClient.getResponseAboutCreatedOrder(response);
         orderChecks.checkCreatedOrderSuccess(orderCreated);
     }
-
     @AfterClass
-    public static void logoutUser() {
-        if(!userLoginInfo.getRefreshToken().isBlank()) {
-            ValidatableResponse response = userClient.logoutUser(userLoginInfo);
-            userChecks.checkLogoutUser(response);
+    public static void deleteUser() {
+        if(userRegistrationInfo.getAccessToken() != null) {
+            if (!userRegistrationInfo.getAccessToken().isBlank()) {
+                userClient.deleteUser(userRegistrationInfo);
+            }
         }
     }
 }

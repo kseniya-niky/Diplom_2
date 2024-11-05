@@ -13,7 +13,7 @@ public class NewUser {
         this.name = name;
     }
 
-    static NewUser random() {
+    public static NewUser random() {
         return new NewUser("Lucky_" + new Random().nextInt() + "@tst.ru",
                 "L&%$h" + new Random().nextInt(),
                 "UU" + new Random().nextInt());

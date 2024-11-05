@@ -6,6 +6,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import site.nomoreparties.stellarburgers.ClientServices;
 import site.nomoreparties.stellarburgers.Constants;
+import site.nomoreparties.stellarburgers.users.NewUserRegistrationInfo;
 import site.nomoreparties.stellarburgers.users.UserLoginInfo;
 
 import static io.restassured.RestAssured.given;
@@ -47,7 +48,7 @@ public class OrderClient {
 
     @Step("Создание нового заказа с авторизацией пользователя")
     public ValidatableResponse createNewOrderWithAuth(OrderIngredients ingredients,
-                                                      UserLoginInfo info) {
+                                                      NewUserRegistrationInfo info) {
         String token = services.trimAccessToken(info.getAccessToken());
         return specificationWithAuth(token)
                 .contentType(ContentType.JSON)
@@ -77,7 +78,7 @@ public class OrderClient {
     }
 
     @Step("Получение списка заказов для авторизованного пользователя")
-    public ValidatableResponse getOrdersWithAuth(UserLoginInfo info) {
+    public ValidatableResponse getOrdersWithAuth(NewUserRegistrationInfo info) {
         String token = services.trimAccessToken(info.getAccessToken());
         return specificationWithAuth(token)
                 .and()

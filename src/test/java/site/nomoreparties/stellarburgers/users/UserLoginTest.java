@@ -3,20 +3,29 @@ package site.nomoreparties.stellarburgers.users;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import site.nomoreparties.stellarburgers.Constants;
 
 public class UserLoginTest {
     private UserClient userClient = new UserClient();
     private UserChecks userChecks = new UserChecks();
     private UserLoginInfo userLoginInfo;
+    private NewUser newUser;
+    private NewUserRegistrationInfo userRegistrationInfo = new NewUserRegistrationInfo();
+
+    @Before
+    public void createUser() {
+        newUser = NewUser.random();
+        ValidatableResponse response = userClient.createNewUser(newUser);
+        userRegistrationInfo = userClient.getResponseAboutNewUser(response);
+        userChecks.checkCreatedUser(userRegistrationInfo, newUser);
+    }
 
     @After
-    public void logoutUser() {
-        if(userLoginInfo.getRefreshToken() != null) {
-            if (!userLoginInfo.getRefreshToken().isBlank()) {
-                ValidatableResponse response = userClient.logoutUser(userLoginInfo);
-                userChecks.checkLogoutUser(response);
+    public void deleteUser() {
+        if(userRegistrationInfo.getAccessToken() != null) {
+            if (!userRegistrationInfo.getAccessToken().isBlank()) {
+                userClient.deleteUser(userRegistrationInfo);
             }
         }
     }
@@ -24,9 +33,9 @@ public class UserLoginTest {
     @Test
     @DisplayName("Авторизация существующего пользователя")
     public void loginDefaultUser() {
-        UserLogin userLogin = new UserLogin(Constants.DEFAULT_EMAIL, Constants.DEFAULT_PASSWORD);
+        UserLogin userLogin = new UserLogin(newUser.getEmail(), newUser.getPassword());
         ValidatableResponse response = userClient.loginUser(userLogin);
         userLoginInfo = userClient.getResponseAboutLogin(response);
-        userChecks.checkLoginDefaultUser(userLoginInfo);
+        userChecks.checkLoginDefaultUser(userLoginInfo, newUser);
     }
 }
